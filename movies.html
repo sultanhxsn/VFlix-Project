@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vFlix — Infinite Library</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+
+    <style>
+        /* --- PAGE SPECIFIC SUPERIOR STYLES --- */
+        :root {
+            --neon-gold: #ffd700;
+            --neon-red: #ff0055;
+            --neon-blue: #00f3ff;
+            --neon-purple: #bc13fe;
+            --glass-surface: rgba(20, 20, 20, 0.7);
+        }
+
+        body {
+            background-color: #050505;
+            overflow-x: hidden;
+        }
+
+        /* 1. THE CINEMAVERSE BACKGROUND */
+        .cinemaverse-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            pointer-events: none; overflow: hidden;
+            background: radial-gradient(circle at 50% 10%, #1a0b1e 0%, #000000 100%);
+        }
+        .cine-floater {
+            position: absolute; color: rgba(255, 255, 255, 0.03); filter: blur(1px);
+            animation: floatCinema 25s infinite linear; z-index: 0;
+        }
+        .cf1 { top: 15%; left: 10%; font-size: 5rem; animation-duration: 30s; color: rgba(0, 243, 255, 0.05); }
+        .cf2 { top: 60%; right: 15%; font-size: 3rem; animation-duration: 20s; animation-direction: reverse; color: rgba(255, 0, 85, 0.05); }
+        .cf3 { bottom: 10%; left: 30%; font-size: 8rem; animation-duration: 45s; opacity: 0.02; transform: rotate(45deg); }
+        @keyframes floatCinema {
+            0% { transform: translateY(0) rotate(0deg) scale(1); }
+            50% { transform: translateY(-40px) rotate(10deg) scale(1.1); }
+            100% { transform: translateY(0) rotate(0deg) scale(1); }
+        }
+
+        /* 2. SUPERIOR HERO SPOTLIGHT - OPPENHEIMER WITH NETFLIX-STYLE BACKGROUND */
+        .movie-spotlight {
+            height: 85vh; position: relative; margin: 0 -3rem 4rem -3rem; border-radius: 0 0 50px 50px;
+            overflow: hidden; display: flex; align-items: center; padding: 0 10%;
+            box-shadow: 0 20px 100px rgba(0,0,0,0.9); border-bottom: 1px solid rgba(0, 153, 255, 0.2);
+        }
+        .spotlight-bg {
+            position: absolute; inset: 0;
+            /* OPTION 1: Netflix-style Oppenheimer background */
+            background: url('/images/pb.jpg') center/cover;
+            /* OPTION 2: Thomas Shelby style background (uncomment below and comment above) */
+            /* background: url('https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover; */
+            filter: brightness(0.5) contrast(1.1); transform: scale(1.1); transition: transform 10s ease; z-index: 0;
+        }
+        .movie-spotlight:hover .spotlight-bg { transform: scale(1); }
+        .spotlight-overlay { 
+            position: absolute; inset: 0; 
+            background: linear-gradient(90deg, #000 0%, rgba(0,0,0,0.8) 40%, transparent 100%),
+                        linear-gradient(180deg, transparent 70%, #000 100%);
+            z-index: 1; 
+        }
+        .spotlight-content { position: relative; z-index: 2; max-width: 900px; opacity: 0; animation: slideUpFade 1s ease forwards 0.5s; }
+        @keyframes slideUpFade { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* BOLD WHITE FONT STYLE */
+        .bold-white {
+            color: #FFFFFF !important; font-weight: 900 !important;
+            text-shadow: 0 4px 0 #000000, 0 0 20px rgba(255, 255, 255, 0.4), 0 10px 30px rgba(0, 0, 0, 0.9) !important;
+            letter-spacing: -1px; transform: translateZ(0);
+        }
+        .hero-title-large { font-size: 5.5rem; line-height: 1; margin-bottom: 1rem; text-transform: uppercase; }
+
+        .meta-badges { display: flex; gap: 15px; margin-bottom: 25px; }
+        .tech-badge {
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            color: white; padding: 5px 12px; font-weight: 700; font-size: 0.8rem; border-radius: 4px;
+            backdrop-filter: blur(5px);
+        }
+        .tech-badge.gold { border-color: var(--neon-gold); color: var(--neon-gold); box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); }
+
+        /* 3. GLASS FILTER BAR */
+        .glass-filter {
+            position: sticky; top: 100px; z-index: 90;
+            background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(25px);
+            border: 1px solid rgba(255,255,255,0.08); padding: 1.2rem; border-radius: 20px;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 4rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .glass-filter:hover { border-color: var(--neon-blue); box-shadow: 0 0 40px rgba(0, 153, 255, 0.15); transform: translateY(-5px); }
+        
+        .filter-tags { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+        .f-tag {
+            background: rgba(255,255,255,0.03); color: #aaa; padding: 10px 25px; border-radius: 30px;
+            cursor: pointer; white-space: nowrap; transition: 0.3s; border: 1px solid transparent; font-weight: 600;
+        }
+        .f-tag.active, .f-tag:hover {
+            background: var(--neon-blue); color: #000; box-shadow: 0 0 20px var(--neon-blue); font-weight: 800; transform: scale(1.05);
+        }
+
+        .search-neon {
+            background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 30px;
+            color: white; padding: 12px 25px; width: 300px; font-size: 0.95rem; transition: 0.3s; outline: none;
+        }
+        .search-neon:focus { border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0, 243, 255, 0.3); width: 350px; }
+
+        /* 4. 3D TILT CARDS (ADVANCED) */
+        .section-header-godly { display: flex; align-items: center; margin-bottom: 40px; position: relative; }
+        .section-header-godly::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--neon-blue), transparent); margin-left: 20px; opacity: 0.5; }
+        .header-title { font-size: 2.5rem; }
+
+        .tilt-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 40px;
+            perspective: 1200px; margin-bottom: 6rem;
+        }
+        .tilt-card {
+            background: #111; border-radius: 16px; position: relative; transform-style: preserve-3d;
+            transition: transform 0.1s ease-out; box-shadow: 0 15px 40px rgba(0,0,0,0.6); cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .tilt-card::before {
+            content: ''; position: absolute; inset: 0; border-radius: 16px; padding: 1px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent); 
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
+        }
+        .tilt-thumb {
+            width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 16px;
+            transform: translateZ(20px); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .tilt-content {
+            position: absolute; bottom: 20px; left: 20px; right: 20px; transform: translateZ(40px);
+            text-shadow: 0 2px 10px rgba(0,0,0,1); pointer-events: none;
+        }
+        .tilt-title { color: white; font-weight: 800; font-size: 1.2rem; margin-bottom: 5px; text-transform: uppercase; }
+        .tilt-meta { color: var(--neon-gold); font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        
+        .play-hover {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) translateZ(50px) scale(0);
+            width: 60px; height: 60px; background: var(--neon-red); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;
+            box-shadow: 0 0 30px var(--neon-red); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .tilt-card:hover .play-hover { transform: translate(-50%, -50%) translateZ(50px) scale(1); }
+
+        /* 5. AI MOOD SCANNER (HUD Style) */
+        .mood-section {
+            background: linear-gradient(180deg, rgba(10,10,15,0.9), rgba(0,0,0,1));
+            border-radius: 30px; padding: 5rem 2rem; text-align: center; position: relative; overflow: hidden;
+            border: 1px solid rgba(0, 243, 255, 0.15); margin-bottom: 6rem;
+            box-shadow: inset 0 0 100px rgba(0, 243, 255, 0.05);
+        }
+        .scan-line {
+            position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: var(--neon-blue); box-shadow: 0 0 20px var(--neon-blue), 0 0 40px var(--neon-blue);
+            animation: scanner 3s ease-in-out infinite; z-index: 5;
+        }
+        @keyframes scanner { 0%, 100% { top: 0; opacity: 0; } 50% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+        
+        .mood-grid { display: flex; justify-content: center; gap: 30px; margin-top: 4rem; flex-wrap: wrap; position: relative; z-index: 10; }
+        .mood-orb {
+            width: 120px; height: 120px; border-radius: 50%; background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; align-items: center;
+            justify-content: center; cursor: pointer; transition: 0.4s; position: relative; overflow: hidden;
+        }
+        .mood-orb::before {
+            content: ''; position: absolute; width: 100%; height: 100%; background: radial-gradient(circle, var(--neon-blue), transparent 60%);
+            opacity: 0; transition: 0.4s; transform: scale(0.5);
+        }
+        .mood-orb:hover { transform: translateY(-10px) scale(1.1); border-color: var(--neon-blue); box-shadow: 0 0 40px rgba(0, 243, 255, 0.3); }
+        .mood-orb:hover::before { opacity: 0.2; transform: scale(1); }
+        .mood-orb i { font-size: 2.5rem; margin-bottom: 8px; color: #ccc; z-index: 2; transition: 0.3s; }
+        .mood-orb:hover i { color: white; text-shadow: 0 0 10px white; }
+        .mood-text { font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; color: #888; z-index: 2; font-weight: 700; }
+
+        /* 6. HOLOGRAPHIC ROW */
+        .holo-container { perspective: 1000px; padding: 2rem 0; margin-bottom: 4rem; overflow-x: auto; display: flex; gap: 30px; scrollbar-width: none; }
+        .holo-card {
+            min-width: 220px; height: 340px; background: rgba(0, 20, 40, 0.6); border-radius: 12px;
+            position: relative; border: 1px solid rgba(0, 243, 255, 0.3); overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .holo-card::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 243, 255, 0.1) 3px);
+            pointer-events: none; z-index: 5;
+        }
+        .holo-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; filter: hue-rotate(180deg) grayscale(50%); transition: 0.5s; }
+        .holo-card:hover .holo-img { opacity: 1; filter: hue-rotate(0deg) grayscale(0%); }
+        .holo-tag {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 5px 10px;
+            font-family: monospace; background: rgba(0,0,0,0.8); z-index: 6; text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        @media (max-width: 768px) {
+            .movie-spotlight { margin: 0 -15px 3rem -15px; border-radius: 0 0 30px 30px; height: 70vh; }
+            .hero-title-large { font-size: 3rem; }
+            .glass-filter { flex-direction: column; gap: 20px; align-items: stretch; top: 80px; }
+            .search-neon { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cinemaverse-container">
+        <i class="fas fa-satellite cine-floater cf1"></i>
+        <i class="fas fa-meteor cine-floater cf2"></i>
+        <i class="fas fa-film cine-floater cf3"></i>
+    </div>
+
+    <header>
+        <nav class="navbar">
+            <div class="logo-container">
+                <a href="index.html" class="logo">
+                    <span class="logo-v">v</span><span class="logo-flix">Flix</span>
+                    <div class="logo-glow"></div>
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-home"></i> <span>Home</span></a></li>
+                <li class="nav-item"><a class="nav-link active" href="movies.html"><i class="fas fa-film"></i> <span>Movies</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="about.html"><i class="fas fa-info-circle"></i> <span>About</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="contact.html"><i class="fas fa-envelope"></i> <span>Contact</span></a></li>
+                <li class="nav-item nav-action">
+                    <a class="nav-btn" href="#"><i class="fas fa-search"></i> <span>Search</span></a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        
+        <section class="movie-spotlight">
+            <div class="spotlight-bg"></div>
+            <div class="spotlight-overlay"></div>
+            <div class="spotlight-content">
+                <div class="meta-badges">
+                    <span class="tech-badge" style="background: #e50914; border-color: #e50914;">#1 TRENDING</span>
+                    <span class="tech-badge">4K ULTRA HD</span>
+                    <span class="tech-badge">DOLBY ATMOS</span>
+                    <span class="tech-badge gold">IMAX ENHANCED</span>
+                </div>
+                <h1 class="hero-title-large bold-white">PEAKY BLINDERS</h1>
+                
+                <div class="meta-badges" style="margin-bottom: 20px; align-items: center;">
+                    <span style="color: #46d369; font-weight: 800; font-size: 1.1rem;">98% Match</span>
+                    <span style="color: #aaa; margin: 0 10px;">2023</span>
+                    <span style="border: 1px solid #aaa; padding: 0 5px; font-size: 0.8rem; border-radius: 3px;">R</span>
+                    <span style="color: #aaa; margin: 0 10px;">3h 0m</span>
+                </div>
+
+                <p style="color: #ddd; font-size: 1.1rem; margin-bottom: 2.5rem; max-width: 650px; line-height: 1.7; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">
+                    During World War II, Lt. Gen. Leslie Groves Jr. appoints physicist J. Robert Oppenheimer to work on the top-secret Manhattan Project. 
+                    Experience the cinematic masterpiece that defines a generation.
+                </p>
+
+                <div class="hero-buttons">
+                    <button class="hero-btn primary-btn" onclick="alert('Starting Playback in 4K HDR...')">
+                        <i class="fas fa-play"></i> Play Now
+                    </button>
+                    <button class="hero-btn secondary-btn" onclick="alert('Added to Watchlist')">
+                        <i class="fas fa-plus"></i> Watchlist
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <div class="glass-filter">
+            <div class="filter-tags">
+                <span class="f-tag active">For You</span>
+                <span class="f-tag">Movies</span>
+                <span class="f-tag">TV Shows</span>
+                <span class="f-tag">4K HDR</span>
+                <span class="f-tag">New</span>
+                <span class="f-tag">Action</span>
+                <span class="f-tag">Sci-Fi</span>
+                <span class="f-tag">Horror</span>
+            </div>
+            <div style="position: relative;">
+                <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.5);"></i>
+                <input type="text" class="search-neon" placeholder="Search titles, people, genres..." style="padding-left: 45px;">
+            </div>
+        </div>
+
+        <section class="mood-section">
+            <div class="scan-line"></div>
+            <h2 class="section-title bold-white" style="justify-content:center; font-size: 3rem;">
+                <i class="fas fa-fingerprint" style="color:var(--neon-blue); margin-right: 15px;"></i> MOOD AI™
+            </h2>
+            <p style="color: #888; letter-spacing: 1px; margin-top: 10px; font-size: 1.1rem;">ADVANCED BIOMETRIC CONTENT MATCHING</p>
+            
+            <div class="mood-grid">
+                <div class="mood-orb" onclick="alert('Analyzing adrenaline levels... Suggesting Action')">
+                    <i class="fas fa-bolt"></i>
+                    <span class="mood-text">Hype</span>
+                </div>
+                <div class="mood-orb" onclick="alert('Lowering heart rate... Suggesting Chill')">
+                    <i class="fas fa-moon"></i>
+                    <span class="mood-text">Chill</span>
+                </div>
+                <div class="mood-orb" onclick="alert('Expanding neural pathways... Suggesting Sci-Fi')">
+                    <i class="fas fa-brain"></i>
+                    <span class="mood-text">Focus</span>
+                </div>
+                <div class="mood-orb" onclick="alert('Heightening senses... Suggesting Horror')">
+                    <i class="fas fa-heart-pulse"></i>
+                    <span class="mood-text">Fear</span>
+                </div>
+                <div class="mood-orb" onclick="alert('Releasing dopamine... Suggesting Comedy')">
+                    <i class="fas fa-face-laugh-squint"></i>
+                    <span class="mood-text">Joy</span>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-header-godly">
+            <h2 class="header-title bold-white">Top Picks For You</h2>
+        </div>
+
+        <div class="tilt-grid">
+            <!-- Option 1: Online Unsplash Images (Comment out Option 2 when using this) -->
+            <div class="tilt-card" onclick="alert('Playing Interstellar')">
+                <!-- Online Image -->
+                <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="tilt-thumb" alt="Interstellar">
+                <!-- Local Image (Uncomment below and comment above for local image) -->
+                <!-- <img src="images/interstellar.jpg" class="tilt-thumb" alt="Interstellar"> -->
+                <div class="play-hover"><i class="fas fa-play"></i></div>
+                <div class="tilt-content">
+                    <h3 class="tilt-title">Interstellar</h3>
+                    <div class="tilt-meta">
+                        <i class="fas fa-star" style="color: #ffd700;"></i> 9.8 • 2014 • IMAX
+                    </div>
+                </div>
+            </div>
+
+            <div class="tilt-card" onclick="alert('Playing Dune')">
+                <!-- Online Image -->
+                <img src="https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="tilt-thumb" alt="Dune">
+                <!-- Local Image -->
+                <!-- <img src="images/dune.jpg" class="tilt-thumb" alt="Dune"> -->
+                <div class="play-hover"><i class="fas fa-play"></i></div>
+                <div class="tilt-content">
+                    <h3 class="tilt-title">Dune: Part Two</h3>
+                    <div class="tilt-meta">
+                        <i class="fas fa-star" style="color: #ffd700;"></i> 9.5 • 2024 • 4K
+                    </div>
+                </div>
+            </div>
+
+            <div class="tilt-card" onclick="alert('Playing Blade Runner')">
+                <!-- Online Image -->
+                <img src="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="tilt-thumb" alt="Blade Runner">
+                <!-- Local Image -->
+                <!-- <img src="images/blade-runner.jpg" class="tilt-thumb" alt="Blade Runner"> -->
+                <div class="play-hover"><i class="fas fa-play"></i></div>
+                <div class="tilt-content">
+                    <h3 class="tilt-title">Blade Runner 2049</h3>
+                    <div class="tilt-meta">
+                        <i class="fas fa-star" style="color: #ffd700;"></i> 9.4 • Sci-Fi • HDR
+                    </div>
+                </div>
+            </div>
+
+            <div class="tilt-card" onclick="alert('Playing Joker')">
+                <!-- Online Image -->
+                <img src="/images/images.jpg" class="tilt-thumb" alt="Joker">
+                <!-- Local Image -->
+                <!-- <img src="images/joker.jpg" class="tilt-thumb" alt="Joker"> -->
+                <div class="play-hover"><i class="fas fa-play"></i></div>
+                <div class="tilt-content">
+                    <h3 class="tilt-title">Joker</h3>
+                    <div class="tilt-meta">
+                        <i class="fas fa-star" style="color: #ffd700;"></i> 9.1 • Drama • HD
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tilt-card" onclick="alert('Playing Avengers')">
+                <!-- Online Image -->
+                <img src="/images/interstellar.jpg" class="tilt-thumb" alt="Endgame">
+                <!-- Local Image -->
+                <!-- <img src="images/avengers.jpg" class="tilt-thumb" alt="Avengers"> -->
+                <div class="play-hover"><i class="fas fa-play"></i></div>
+                <div class="tilt-content">
+                    <h3 class="tilt-title">Interstellar</h3>
+                    <div class="tilt-meta">
+                        <i class="fas fa-star" style="color: #ffd700;"></i> 9.3 • Action • 4K
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tilt-card" onclick="alert('Playing Inception')">
+                <!-- Online Image -->
+                <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="tilt-thumb" alt="Inception">
+                <!-- Local Image -->
+                <!-- <img src="images/inception.jpg" class="tilt-thumb" alt="Inception"> -->
+                <div class="play-hover"><i class="fas fa-play"></i></div>
+                <div class="tilt-content">
+                    <h3 class="tilt-title">Inception</h3>
+                    <div class="tilt-meta">
+                        <i class="fas fa-star" style="color: #ffd700;"></i> 9.7 • Sci-Fi • HD
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tilt-card" onclick="alert('Playing Spiderman')">
+                <!-- Online Image -->
+                <img src="https://images.unsplash.com/photo-1635805737707-575885ab0820?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="tilt-thumb" alt="Spiderman">
+                <!-- Local Image -->
+                <!-- <img src="images/spiderman.jpg" class="tilt-thumb" alt="Spiderman"> -->
+                <div class="play-hover"><i class="fas fa-play"></i></div>
+                <div class="tilt-content">
+                    <h3 class="tilt-title">No Way Home</h3>
+                    <div class="tilt-meta">
+                        <i class="fas fa-star" style="color: #ffd700;"></i> 9.0 • Action • 4K
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tilt-card" onclick="alert('Playing Batman')">
+                <!-- Online Image -->
+                <img src="/images/batman.jpg" class="tilt-thumb" alt="Batman">
+                <!-- Local Image -->
+                <!-- <img src="images/batman.jpg" class="tilt-thumb" alt="Batman"> -->
+                <div class="play-hover"><i class="fas fa-play"></i></div>
+                <div class="tilt-content">
+                    <h3 class="tilt-title">The Dark Knight</h3>
+                    <div class="tilt-meta">
+                        <i class="fas fa-star" style="color: #ffd700;"></i> 9.9 • Crime • 4K
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-header-godly">
+            <h2 class="header-title bold-white">Coming Soon <span style="font-size: 1rem; color: var(--neon-blue); vertical-align: middle; border: 1px solid var(--neon-blue); padding: 2px 8px; border-radius: 4px;">HOLO-VIEW</span></h2>
+        </div>
+        
+        <div class="holo-container">
+            <div class="holo-card">
+                <img src="https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="holo-img" alt="Soon 1">
+                <div class="holo-tag">02d 14h</div>
+            </div>
+            <div class="holo-card">
+                <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="holo-img" alt="Soon 2">
+                <div class="holo-tag">05d 08h</div>
+            </div>
+            <div class="holo-card">
+                <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="holo-img" alt="Soon 3">
+                <div class="holo-tag">12d 00h</div>
+            </div>
+             <div class="holo-card">
+                <img src="https://images.unsplash.com/photo-1542204165-65bf26472b9b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="holo-img" alt="Soon 4">
+                <div class="holo-tag">15d 10h</div>
+            </div>
+            <div class="holo-card">
+                <img src="/images/fl.jpg" class="holo-img" alt="Soon 5">
+                <div class="holo-tag">20d 05h</div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <div class="footer-wave"></div>
+        <div class="footer-content">
+            <div class="footer-main">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <span class="logo-v">v</span><span class="logo-flix">Flix</span>
+                        <div class="logo-glow"></div>
+                    </div>
+                    <p class="footer-tagline">Premium Streaming Experience</p>
+                    <p class="footer-description">
+                        Experience cinema like never before. vFlix delivers premium content in stunning 4K HDR 
+                        with Dolby Atmos sound. Available on all your devices.
+                    </p>
+                </div>
+                
+                <div class="footer-links-grid">
+                    <div class="footer-links-column">
+                        <h4 class="footer-heading">Explore</h4>
+                        <a href="index.html" class="footer-link">Home</a>
+                        <a href="movies.html" class="footer-link">Movies</a>
+                        <a href="about.html" class="footer-link">About</a>
+                        <a href="contact.html" class="footer-link">Contact</a>
+                    </div>
+                    
+                    <div class="footer-links-column">
+                        <h4 class="footer-heading">Content</h4>
+                        <a href="#" class="footer-link">Trending</a>
+                        <a href="#" class="footer-link">New Releases</a>
+                        <a href="#" class="footer-link">Exclusive</a>
+                        <a href="#" class="footer-link">Original Series</a>
+                    </div>
+                    
+                    <div class="footer-links-column">
+                        <h4 class="footer-heading">Legal</h4>
+                        <a href="#" class="footer-link">Privacy Policy</a>
+                        <a href="#" class="footer-link">Terms of Service</a>
+                        <a href="#" class="footer-link">Cookie Policy</a>
+                        <a href="#" class="footer-link">Content Policy</a>
+                    </div>
+                    
+                    <div class="footer-links-column">
+                        <h4 class="footer-heading">Support</h4>
+                        <a href="#" class="footer-link">Help Center</a>
+                        <a href="#" class="footer-link">FAQ</a>
+                        <a href="#" class="footer-link">System Status</a>
+                        <a href="#" class="footer-link">Contact Support</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-social-section">
+                <div class="social-icons">
+                    <a href="#" class="social-icon" title="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                        <span class="social-tooltip">Facebook</span>
+                    </a>
+                    <a href="#" class="social-icon" title="Twitter">
+                        <i class="fab fa-twitter"></i>
+                        <span class="social-tooltip">Twitter</span>
+                    </a>
+                    <a href="#" class="social-icon" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                        <span class="social-tooltip">Instagram</span>
+                    </a>
+                    <a href="#" class="social-icon" title="YouTube">
+                        <i class="fab fa-youtube"></i>
+                        <span class="social-tooltip">YouTube</span>
+                    </a>
+                    <a href="#" class="social-icon" title="Reddit">
+                        <i class="fab fa-reddit-alien"></i>
+                        <span class="social-tooltip">Reddit</span>
+                    </a>
+                    <a href="#" class="social-icon" title="Discord">
+                        <i class="fab fa-discord"></i>
+                        <span class="social-tooltip">Discord</span>
+                    </a>
+                </div>
+                
+                <div class="footer-newsletter">
+                    <h4 class="newsletter-title">Stay Updated</h4>
+                    <p class="newsletter-subtitle">Get the latest updates on new releases and features</p>
+                    <div class="newsletter-form">
+                        <input type="email" placeholder="Enter your email" class="newsletter-input">
+                        <button class="newsletter-btn">
+                            <i class="fas fa-paper-plane"></i>
+                            Subscribe
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="copyright">
+                    &copy; 2024 <span class="copyright-highlight">vFlix Premium</span>. All rights reserved.
+                </div>
+                <div class="footer-extra">
+                    <span class="extra-item">4K Ultra HD</span>
+                    <span class="extra-item">HDR 10+</span>
+                    <span class="extra-item">Dolby Atmos</span>
+                    <span class="extra-item">Premium Content</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script>
+        // --- 1. 3D TILT EFFECT LOGIC ---
+        const tiltCards = document.querySelectorAll('.tilt-card');
+
+        tiltCards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left; 
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                // Multiplier controls how extreme the tilt is
+                const rotateX = ((y - centerY) / centerY) * -12; 
+                const rotateY = ((x - centerX) / centerX) * 12;
+
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`;
+            });
+        });
+
+        // --- 2. FILTER LOGIC ---
+        const filterTags = document.querySelectorAll('.f-tag');
+        filterTags.forEach(tag => {
+            tag.addEventListener('click', () => {
+                filterTags.forEach(t => t.classList.remove('active'));
+                tag.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

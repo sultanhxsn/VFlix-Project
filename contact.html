@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vFlix — Contact Command</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+
+    <style>
+        /* --- $50k CONTACT STYLES --- */
+        :root {
+            --neon-purple: #bc13fe;
+            --neon-blue: #00f3ff;
+            --neon-green: #00ff9d;
+        }
+
+        body {
+            background-color: #050505;
+            overflow-x: hidden;
+        }
+
+        /* 1. NETWORK BACKGROUND */
+        .network-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 10% 10%, #150a20 0%, #000000 100%);
+            overflow: hidden;
+        }
+
+        .net-particle {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: floatNet 20s infinite linear;
+        }
+
+        @keyframes floatNet {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            50% { opacity: 0.3; }
+            100% { transform: translateY(-100px) translateX(50px); opacity: 0; }
+        }
+
+        /* 2. HERO SECTION */
+        .contact-hero {
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .contact-title {
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(to right, #fff, var(--neon-purple), var(--neon-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+            letter-spacing: -2px;
+        }
+
+        .contact-subtitle {
+            font-size: 1.2rem;
+            color: #888;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* 3. SPLIT LAYOUT */
+        .contact-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 4rem;
+            max-width: 1200px;
+            margin: 0 auto 5rem;
+            padding: 0 20px;
+        }
+
+        /* LEFT: 3D INFO CARDS */
+        .info-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.1s ease; /* Fast for tilt */
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .info-card:hover {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.1);
+        }
+
+        .info-card:hover::before { opacity: 1; }
+
+        .ic-icon {
+            font-size: 2rem;
+            color: var(--neon-blue);
+            margin-bottom: 1rem;
+            background: rgba(0, 243, 255, 0.1);
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .ic-title { font-size: 1.2rem; font-weight: 700; color: white; margin-bottom: 5px; }
+        .ic-text { color: #aaa; font-size: 0.95rem; }
+
+        /* RIGHT: HOLOGRAPHIC FORM */
+        .glass-form {
+            background: rgba(20, 20, 20, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 3rem;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Form Glowing Border Animation */
+        .glass-form::after {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue), transparent, transparent);
+            z-index: -1;
+            border-radius: 30px;
+            background-size: 400%;
+            animation: borderGlow 10s linear infinite;
+        }
+
+        @keyframes borderGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .neon-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+            padding: 10px 0;
+            color: white;
+            font-size: 1.1rem;
+            font-family: 'Montserrat', sans-serif;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-label {
+            position: absolute;
+            top: 10px;
+            left: 0;
+            color: #666;
+            transition: 0.3s;
+            pointer-events: none;
+        }
+
+        /* Floating Label Logic */
+        .neon-input:focus ~ .input-label,
+        .neon-input:valid ~ .input-label {
+            top: -20px;
+            font-size: 0.8rem;
+            color: var(--neon-blue);
+        }
+
+        .neon-input:focus {
+            border-bottom-color: var(--neon-blue);
+        }
+
+        .input-highlight {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 2px;
+            width: 0;
+            background: var(--neon-purple);
+            transition: 0.4s ease;
+        }
+
+        .neon-input:focus ~ .input-highlight {
+            width: 100%;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(188, 19, 254, 0.4);
+        }
+
+        .submit-btn::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.5s;
+        }
+        
+        .submit-btn:hover::after { left: 100%; }
+
+        /* 4. CYBER MAP SCANNER */
+        .map-section {
+            height: 400px;
+            margin: 4rem 20px;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+
+        .map-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Placeholder map image styled dark */
+            background: url('https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;
+            filter: hue-rotate(190deg) invert(90%) grayscale(60%) contrast(120%);
+        }
+
+        .scanner-overlay {
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent 0%,
+                transparent 49%,
+                rgba(0, 243, 255, 0.1) 50%,
+                transparent 51%,
+                transparent 100%
+            );
+            background-size: 100% 10px;
+            pointer-events: none;
+        }
+
+        .radar-sweep {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 300px; height: 300px;
+            transform: translate(-50%, -50%);
+            border: 2px solid var(--neon-blue);
+            border-radius: 50%;
+            box-shadow: 0 0 50px var(--neon-blue);
+            opacity: 0.5;
+            animation: pulseRadar 2s infinite;
+        }
+
+        .radar-dot {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 20px; height: 20px;
+            background: var(--neon-red);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 20px var(--neon-red);
+            animation: pulseDot 1s infinite alternate;
+        }
+
+        @keyframes pulseRadar {
+            0% { width: 0; height: 0; opacity: 1; }
+            100% { width: 500px; height: 500px; opacity: 0; }
+        }
+
+        /* 5. FAQ DROPDOWNS */
+        .faq-section {
+            max-width: 800px;
+            margin: 0 auto 6rem;
+            padding: 0 20px;
+        }
+
+        .faq-item {
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .faq-question {
+            padding: 1.5rem 0;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            transition: 0.3s;
+        }
+
+        .faq-question:hover { color: var(--neon-blue); }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            color: #aaa;
+            line-height: 1.6;
+        }
+        
+        .faq-item.active .faq-answer {
+            max-height: 200px;
+            padding-bottom: 1.5rem;
+        }
+
+        .faq-icon { transition: 0.3s; }
+        .faq-item.active .faq-icon { transform: rotate(180deg); color: var(--neon-blue); }
+
+        /* SUCCESS MODAL */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.5s;
+        }
+
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+
+        .success-card {
+            background: #111;
+            border: 1px solid var(--neon-green);
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            transform: scale(0.8);
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 50px rgba(0, 255, 157, 0.2);
+        }
+
+        .modal-overlay.active .success-card { transform: scale(1); }
+
+        .check-icon {
+            font-size: 4rem;
+            color: var(--neon-green);
+            margin-bottom: 1rem;
+            animation: popIn 0.5s ease;
+        }
+
+        @media(max-width: 900px) {
+            .contact-wrapper { grid-template-columns: 1fr; }
+            .contact-title { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="network-bg">
+        </div>
+
+    <header>
+        <nav class="navbar">
+            <div class="logo-container">
+                <a href="index.html" class="logo">
+                    <span class="logo-v">v</span><span class="logo-flix">Flix</span>
+                    <div class="logo-glow"></div>
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-home"></i> <span>Home</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="movies.html"><i class="fas fa-film"></i> <span>Movies</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="about.html"><i class="fas fa-info-circle"></i> <span>About</span></a></li>
+                <li class="nav-item"><a class="nav-link active" href="contact.html"><i class="fas fa-envelope"></i> <span>Contact</span></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="contact-hero">
+        <h1 class="contact-title">Let's Connect</h1>
+        <p class="contact-subtitle">Have a question about the future of streaming? We're listening on all frequencies.</p>
+    </section>
+
+    <div class="contact-wrapper">
+        
+        <div class="info-stack">
+            <div class="info-card">
+                <div class="ic-icon"><i class="fas fa-map-marker-alt"></i></div>
+                <h3 class="ic-title">Headquarters</h3>
+                <p class="ic-text">8500 Sunset Blvd<br>Los Angeles, CA 90069<br>United States</p>
+            </div>
+            
+            <div class="info-card">
+                <div class="ic-icon"><i class="fas fa-envelope-open-text"></i></div>
+                <h3 class="ic-title">Email Us</h3>
+                <p class="ic-text">support@vflix-premium.com<br>partnerships@vflix.io</p>
+            </div>
+
+            <div class="info-card">
+                <div class="ic-icon"><i class="fas fa-phone-alt"></i></div>
+                <h3 class="ic-title">24/7 Support</h3>
+                <p class="ic-text">+1 (800) 555-0199<br>Live Chat Available</p>
+            </div>
+        </div>
+
+        <div class="glass-form">
+            <h2 style="color:white; margin-bottom: 2rem; font-size: 2rem;">Send Transmission</h2>
+            <form id="contactForm">
+                <div class="form-group">
+                    <input type="text" class="neon-input" id="name" required>
+                    <label class="input-label" for="name">Your Name</label>
+                    <div class="input-highlight"></div>
+                </div>
+                
+                <div class="form-group">
+                    <input type="email" class="neon-input" id="email" required>
+                    <label class="input-label" for="email">Email Address</label>
+                    <div class="input-highlight"></div>
+                </div>
+
+                <div class="form-group">
+                    <input type="text" class="neon-input" id="subject" required>
+                    <label class="input-label" for="subject">Subject</label>
+                    <div class="input-highlight"></div>
+                </div>
+
+                <div class="form-group">
+                    <textarea class="neon-input" id="message" rows="4" style="resize:none;" required></textarea>
+                    <label class="input-label" for="message">Your Message</label>
+                    <div class="input-highlight"></div>
+                </div>
+
+                <button type="submit" class="submit-btn">Initialize Send <i class="fas fa-paper-plane" style="margin-left:10px;"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 class="section-title" style="margin-left: 20px;"><i class="fas fa-satellite"></i> Geo-Location</h2>
+    </div>
+    <div class="map-section">
+        <div class="map-img"></div>
+        <div class="scanner-overlay"></div>
+        <div class="radar-sweep"></div>
+        <div class="radar-dot"></div>
+    </div>
+
+    <div class="container">
+        <h2 class="section-title" style="text-align: center; justify-content: center; margin-bottom: 3rem;">
+            <i class="fas fa-question-circle"></i> Frequent Queries
+        </h2>
+    </div>
+    
+    <div class="faq-section">
+        <div class="faq-item">
+            <div class="faq-question">
+                How do I upgrade to vFlix Ultra?
+                <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+                Simply navigate to your account settings and select the "Ultra Upgrade" plan. Access is instant and prorated.
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">
+                Is 8K streaming supported on all devices?
+                <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+                Currently, 8K streaming requires a compatible Smart TV or Monitor with HDMI 2.1 support and a minimum 100Mbps connection.
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">
+                Can I cancel my subscription anytime?
+                <i class="fas fa-chevron-down faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+                Yes, vFlix believes in freedom. Cancel anytime from your dashboard with zero cancellation fees.
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="successModal">
+        <div class="success-card">
+            <i class="fas fa-check-circle check-icon"></i>
+            <h2 style="color:white; margin-bottom: 10px;">Transmission Sent</h2>
+            <p style="color:#aaa; margin-bottom: 20px;">We have received your signal. Expect a response within 24 light-hours.</p>
+            <button class="submit-btn" onclick="closeModal()" style="padding: 10px 30px;">Acknowledge</button>
+        </div>
+    </div>
+
+     <footer class="footer">
+        <div class="footer-wave"></div>
+        <div class="footer-content">
+            <div class="footer-main">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <span class="logo-v">v</span><span class="logo-flix">Flix</span>
+                        <div class="logo-glow"></div>
+                    </div>
+                    <p class="footer-tagline">Premium Streaming Experience</p>
+                    <p class="footer-description">
+                        Experience cinema like never before. vFlix delivers premium content in stunning 4K HDR 
+                        with Dolby Atmos sound. Available on all your devices.
+                    </p>
+                </div>
+                
+                <div class="footer-links-grid">
+                    <div class="footer-links-column">
+                        <h4 class="footer-heading">Explore</h4>
+                        <a href="index.html" class="footer-link">Home</a>
+                        <a href="movies.html" class="footer-link">Movies</a>
+                        <a href="about.html" class="footer-link">About</a>
+                        <a href="contact.html" class="footer-link">Contact</a>
+                    </div>
+                    
+                    <div class="footer-links-column">
+                        <h4 class="footer-heading">Content</h4>
+                        <a href="#" class="footer-link">Trending</a>
+                        <a href="#" class="footer-link">New Releases</a>
+                        <a href="#" class="footer-link">Exclusive</a>
+                        <a href="#" class="footer-link">Original Series</a>
+                    </div>
+                    
+                    <div class="footer-links-column">
+                        <h4 class="footer-heading">Legal</h4>
+                        <a href="#" class="footer-link">Privacy Policy</a>
+                        <a href="#" class="footer-link">Terms of Service</a>
+                        <a href="#" class="footer-link">Cookie Policy</a>
+                        <a href="#" class="footer-link">Content Policy</a>
+                    </div>
+                    
+                    <div class="footer-links-column">
+                        <h4 class="footer-heading">Support</h4>
+                        <a href="#" class="footer-link">Help Center</a>
+                        <a href="#" class="footer-link">FAQ</a>
+                        <a href="#" class="footer-link">System Status</a>
+                        <a href="#" class="footer-link">Contact Support</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-social-section">
+                <div class="social-icons">
+                    <a href="#" class="social-icon" title="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                        <span class="social-tooltip">Facebook</span>
+                    </a>
+                    <a href="#" class="social-icon" title="Twitter">
+                        <i class="fab fa-twitter"></i>
+                        <span class="social-tooltip">Twitter</span>
+                    </a>
+                    <a href="#" class="social-icon" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                        <span class="social-tooltip">Instagram</span>
+                    </a>
+                    <a href="#" class="social-icon" title="YouTube">
+                        <i class="fab fa-youtube"></i>
+                        <span class="social-tooltip">YouTube</span>
+                    </a>
+                    <a href="#" class="social-icon" title="Reddit">
+                        <i class="fab fa-reddit-alien"></i>
+                        <span class="social-tooltip">Reddit</span>
+                    </a>
+                    <a href="#" class="social-icon" title="Discord">
+                        <i class="fab fa-discord"></i>
+                        <span class="social-tooltip">Discord</span>
+                    </a>
+                </div>
+                
+                <div class="footer-newsletter">
+                    <h4 class="newsletter-title">Stay Updated</h4>
+                    <p class="newsletter-subtitle">Get the latest updates on new releases and features</p>
+                    <div class="newsletter-form">
+                        <input type="email" placeholder="Enter your email" class="newsletter-input">
+                        <button class="newsletter-btn">
+                            <i class="fas fa-paper-plane"></i>
+                            Subscribe
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="copyright">
+                    &copy; 2024 <span class="copyright-highlight">vFlix Premium</span>. All rights reserved.
+                </div>
+                <div class="footer-extra">
+                    <span class="extra-item">4K Ultra HD</span>
+                    <span class="extra-item">HDR 10+</span>
+                    <span class="extra-item">Dolby Atmos</span>
+                    <span class="extra-item">Premium Content</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <script>
+        // 1. GENERATE BACKGROUND PARTICLES
+        const netContainer = document.querySelector('.network-bg');
+        for(let i=0; i<30; i++) {
+            const dot = document.createElement('div');
+            dot.classList.add('net-particle');
+            
+            // Random positioning
+            const size = Math.random() * 4 + 2;
+            dot.style.width = `${size}px`;
+            dot.style.height = `${size}px`;
+            dot.style.left = `${Math.random() * 100}%`;
+            dot.style.top = `${Math.random() * 100}%`;
+            
+            // Random animation delay
+            dot.style.animationDelay = `${Math.random() * 5}s`;
+            dot.style.animationDuration = `${Math.random() * 10 + 10}s`;
+            
+            netContainer.appendChild(dot);
+        }
+
+        // 2. 3D TILT EFFECT FOR INFO CARDS
+        const cards = document.querySelectorAll('.info-card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                // Rotation
+                const rotateX = ((y - centerY) / centerY) * -10;
+                const rotateY = ((x - centerX) / centerX) * 10;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0) rotateY(0)`;
+            });
+        });
+
+        // 3. FORM SUCCESS SIMULATION
+        const form = document.getElementById('contactForm');
+        const modal = document.getElementById('successModal');
+        const inputs = document.querySelectorAll('.neon-input');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Show Modal
+            modal.classList.add('active');
+            
+            // Reset Form
+            inputs.forEach(input => input.value = '');
+        });
+
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+
+        // 4. FAQ ACCORDION
+        const faqs = document.querySelectorAll('.faq-item');
+        faqs.forEach(faq => {
+            faq.addEventListener('click', () => {
+                // Close others
+                faqs.forEach(f => {
+                    if(f !== faq) f.classList.remove('active');
+                });
+                // Toggle current
+                faq.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>
